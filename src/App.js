@@ -1,6 +1,6 @@
 import express from 'express'
 import mongoose, { mongo } from 'mongoose'
-import 'dotenv/config'
+import 'dotenv/config' // Para poder implementar dotenv
 import { Server } from 'socket.io'
 import realTimeRouters from './routes/realTimeProducts.routes.js'
 import { engine } from 'express-handlebars'
@@ -21,7 +21,7 @@ mongoose
     .connect(process.env.URL_MONGOOSE)
     .then(() => console.log('DB is connected'))
     .catch((err) => {
-        console.log('Error connecting to Mongo')
+        console.log('Error connecting to MongoDB')
     })
 
 // Configuration handlebars

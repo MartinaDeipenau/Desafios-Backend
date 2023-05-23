@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { productModel } from '../models/products.js'
+
 const productsRouters = Router()
 
 productsRouters.get('/', async (req, res) => {
@@ -11,9 +12,9 @@ productsRouters.get('/', async (req, res) => {
     const product = await productModel.find()
 
     limit
-      ? res.send({ products: productLimit }) // res.render('home', { products: productLimit })
-      : res.send({ products: product }) //  res.render('home', { products: product })
-  } catch (error) {
+      ? res.send({ products: productLimit }) 
+      : res.send({ products: product }) 
+      } catch (error) {
     console.log(error)
   }
 })
@@ -85,7 +86,6 @@ productsRouters.put('/:id', async (req, res) => {
       stock,
     }
   )
-
   res.send(message)
 })
 

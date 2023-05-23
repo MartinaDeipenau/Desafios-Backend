@@ -14,3 +14,5 @@ messagesRouters.get('/', async (req, res) => {
 
   res.render('messages')
 })
+
+export default messagesRouters

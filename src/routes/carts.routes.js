@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { CartsManager, cartModel } from '../models/carts.js'
+import { cartModel } from '../models/carts.js'
 
 
 const cartsRouters = Router()
@@ -22,10 +22,12 @@ cartsRouters.post('/', async (req, res) => {
       const { quantity } = req.body
   
       const cart = await cartModel.findById({_id: cid })
-      const addCart = cart.products.create({
+      const addcart = cart.products.create({
         id_product: pid,
         quantity: quantity,
       })
+      console.log(cart)
+      console.log(addcart)
     } catch (err) {
       console.log(err)
     }
