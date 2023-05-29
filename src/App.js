@@ -41,7 +41,7 @@ const myServer = app.listen(PORT, () => {
 
 // Server Io
 
-const io = new Server(myServer) // , { cors: { origin: '*' } }
+const io = new Server(myServer) 
 
 app.use((req, res, next) => {
     req.io = io
