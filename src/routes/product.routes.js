@@ -5,23 +5,31 @@ const productsRouters = Router()
 
 productsRouters.get('/', async (req, res) => {
   try {
-    let { limit } = req.query
+    const sort = req.query.sort === 'desc' ? -1 : 1
+    const query = req.query.query || ''
+    const filter = query ? { category: query } : {}
 
-    const productLimit = (await productModel.find()).slice(0, limit)
+    console.log(filter)
+    console.log(query)
 
-    const product = await productModel.find()
+    const options = {
+      limit: parseInt(req.query.limit) || 8,
+      page: parseInt(req.query.page) || 1,
+      sort: { price: sort },
+    }
 
-    limit
-      ? res.send({ products: productLimit }) 
-      : res.send({ products: product }) 
-      } catch (error) {
-    console.log(error)
+    const products = await productModel.paginate(filter, options)
+
+    res.send(products)
+  } catch (err) {
+    res.status(500).send('Error getting products')
   }
 })
 
 productsRouters.get('/:id', async (req, res) => {
   try {
-    const product = await productModel.findOne({ _id: req.params.id })
+    const id = req.params.id
+    const product = await productModel.findOne({ _id: id })
 
     res.send({ products: product })
     // res.render('products', {
@@ -31,6 +39,7 @@ productsRouters.get('/:id', async (req, res) => {
     // })
   } catch (error) {
     console.log(error)
+    res.status(500).send('Error getting product')
   }
 })
 
@@ -70,7 +79,6 @@ productsRouters.put('/:id', async (req, res) => {
     category,
     code,
     stock,
-    npm,
   } = req.body
 
   const message = await productModel.updateOne(
@@ -92,11 +100,12 @@ productsRouters.put('/:id', async (req, res) => {
 productsRouters.delete('/:id', async (req, res) => {
   try {
     const id = req.params.id
-    const deleteProduct = await productModel.deleteOne({ _id: id })
+    await productModel.deleteOne({ _id: id })
 
-    res.send('Product deleted successfully')
+    res.send('Product deleted')
   } catch (err) {
     console.log(err)
+    res.status(500).send('Error deleting product')
   }
 })
 
