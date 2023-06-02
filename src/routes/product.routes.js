@@ -5,12 +5,12 @@ const productsRouters = Router()
 
 productsRouters.get('/', async (req, res) => {
   try {
-    const sort = req.query.sort === 'desc' ? -1 : 1
-    const query = req.query.query || ''
-    const filter = query ? { category: query } : {}
-
-    console.log(filter)
-    console.log(query)
+    const sort = req.query.sort === 'desc' ? -1 : (req.query.sort = 0)
+    const category = req.query.category
+    const status = req.query.status
+    const query = {}
+    category ? (query.category = category) : ''
+    status ? (query.status = status) : ''
 
     const options = {
       limit: parseInt(req.query.limit) || 8,
@@ -18,10 +18,13 @@ productsRouters.get('/', async (req, res) => {
       sort: { price: sort },
     }
 
-    const products = await productModel.paginate(filter, options)
+    const products = await productModel.paginate(query, options)
+    products.status = 'success'
 
     res.send(products)
-  } catch (err) {
+  } catch (error) {
+    console.log(error)
+
     res.status(500).send('Error getting products')
   }
 })
@@ -103,8 +106,8 @@ productsRouters.delete('/:id', async (req, res) => {
     await productModel.deleteOne({ _id: id })
 
     res.send('Product deleted')
-  } catch (err) {
-    console.log(err)
+  } catch (error) {
+    console.log(error)
     res.status(500).send('Error deleting product')
   }
 })

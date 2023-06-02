@@ -2,7 +2,6 @@ import express from 'express'
 import mongoose, { mongo } from 'mongoose'
 import 'dotenv/config' // Para poder implementar dotenv
 import { Server } from 'socket.io'
-import realTimeRouters from './routes/realTimeProducts.routes.js'
 import { engine } from 'express-handlebars'
 import productsRouters from './routes/product.routes.js'
 import cartsRouters from './routes/carts.routes.js'
@@ -20,7 +19,7 @@ const PORT = 4000
 mongoose
     .connect(process.env.URL_MONGOOSE)
     .then(() => console.log('DB is connected'))
-    .catch((err) => {
+    .catch((error) => {
         console.log('Error connecting to MongoDB')
     })
 
@@ -52,5 +51,4 @@ app.use((req, res, next) => {
 app.use('/', express.static(__dirname + '/public'))
 app.use('/api/products', productsRouters)
 app.use('/api/carts', cartsRouters)
-app.use('/api/realtimeproducts', realTimeRouters)
 app.use('/api/messages', messagesRouters)

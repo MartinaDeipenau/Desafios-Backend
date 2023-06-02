@@ -1,4 +1,5 @@
 const socket = io()
+
 let user
 let chatButton = document.getElementById('chatButton')
 let chatBox = document.getElementById('chatBox')
