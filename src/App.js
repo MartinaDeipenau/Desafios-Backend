@@ -36,11 +36,13 @@ app.use(
     session({
         store: MongoStore.create({
             mongoUrl: process.env.URL_MONGOOSE,
+            mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true},
+            ttl: 210 // Segundos
         }),
         secret: process.env.SESSION_SECRET,
         resave: true,
         saveUninitialized: true,
-        cookie: { secure: true }
+        // cookie: { secure: true }
     }))
 
 // Configuration mongoose
