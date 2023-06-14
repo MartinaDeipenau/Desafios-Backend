@@ -18,14 +18,17 @@ productsRouters.get('/', async (req, res) => {
       sort: { price: sort },
     }
 
-    const products = await productModel.paginate(query, options)
-    products.status = 'success'
+    const product = await productModel.paginate(query, options)
+    product.status = 'success'
 
-    res.send(products)
+    res.render('home', {
+      product: product,
+      user: req.session.user,
+    })
   } catch (error) {
-    console.log(error)
+    console.log(MediaError)
 
-    res.status(500).send('Error getting products')
+    res.status(500).send('Error')
   }
 })
 
@@ -34,12 +37,13 @@ productsRouters.get('/:id', async (req, res) => {
     const id = req.params.id
     const product = await productModel.findOne({ _id: id })
 
-    res.send({ products: product })
-    // res.render('products', {
-    //   title: product.title,
-    //   price: product.price,
-    //   stock: product.stock,
-    // })
+    //res.send({ products: product })
+
+    res.render('products', {
+      title: product.title,
+      price: product.price,
+      stock: product.stock,
+    })
   } catch (error) {
     console.log(error)
     res.status(500).send('Error getting product')
@@ -108,7 +112,7 @@ productsRouters.delete('/:id', async (req, res) => {
     res.send('Product deleted')
   } catch (error) {
     console.log(error)
-    res.status(500).send('Error deleting product')
+    res.status(500).send('Error delete product')
   }
 })
 
