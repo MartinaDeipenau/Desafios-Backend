@@ -16,6 +16,7 @@ productsRouters.get('/', async (req, res) => {
       limit: parseInt(req.query.limit) || 8,
       page: parseInt(req.query.page) || 1,
       sort: { price: sort },
+      lean: true,
     }
 
     const product = await productModel.paginate(query, options)
@@ -26,7 +27,7 @@ productsRouters.get('/', async (req, res) => {
       user: req.session.user,
     })
   } catch (error) {
-    console.log(MediaError)
+    console.log(error)
 
     res.status(500).send('Error')
   }
@@ -37,12 +38,11 @@ productsRouters.get('/:id', async (req, res) => {
     const id = req.params.id
     const product = await productModel.findOne({ _id: id })
 
-    //res.send({ products: product })
-
     res.render('products', {
       title: product.title,
       price: product.price,
       stock: product.stock,
+      thumbnail: product.thumbnail,
     })
   } catch (error) {
     console.log(error)

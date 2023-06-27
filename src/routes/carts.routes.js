@@ -3,7 +3,6 @@ import { cartModel } from '../models/carts.js'
 
 
 const cartsRouters = Router()
-// const myNewCart = new CartsManager('./carts.txt')
 
 // POST
 cartsRouters.post('/', async (req, res) => {
@@ -24,6 +23,8 @@ cartsRouters.delete('/:cid', async (req, res) => {
     const cid = req.params.cid
     const cart = await cartModel.findById({ _id: cid })
     cart.products = []
+
+    await cartModel.updateOne({ _id: cid }, cart)
 
     res.send('Removed products')
   } catch (err) {

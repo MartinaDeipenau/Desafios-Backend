@@ -4,15 +4,20 @@ import { messagesModel } from '../models/messages.js'
 const messagesRouters = Router()
 
 messagesRouters.get('/', async (req, res) => {
-  req.io.on('connection', async (socket) => {
-    console.log('Client connected')
-    socket.on('message', async (data) => {
-      await messagesModel.create(data)
-      req.io.emit('messages', await messagesModel.find())
+  try {
+    req.io.on('connection', async (socket) => {
+      console.log('Client connected')
+      socket.on('message', async (data) => {
+        await messagesModel.create(data)
+        req.io.emit('messages', await messagesModel.find())
+      })
     })
-  })
 
-  res.render('messages')
+    res.render('messages')
+  } catch (error) {
+    console.log(error)
+    res.status(500).send('Error getting messages')
+  }
 })
 
 export default messagesRouters

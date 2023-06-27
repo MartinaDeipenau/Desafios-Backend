@@ -14,6 +14,7 @@ import session from 'express-session'
 import MongoStore from 'connect-mongo'
 import cookieParser from 'cookie-parser'
 import passport from 'passport'
+import './config/passportStrategies.js'
 
 
 // Configuration express
@@ -25,10 +26,20 @@ const PORT = 4000
 
 app.use(cookieParser(process.env.SIGNED_COOKIES))
 
-// Middleware
+// Configuration passport
 
-app.use(express.json()) // Me permite ejecutar json en la app
-app.use(express.urlencoded({ extended: true })) // Me permite poder realizar consultas en (req.query)
+passport.serializeUser((user, done) => {
+    done(null, user._id)
+})
+
+passport.deserializeUser(async (id, done) => {
+    try {
+        const user = await usersModel.findById(id)
+        done(null, user)
+    } catch (error) {
+        done(error)
+    }
+})
 
 // Configuration session
 
@@ -58,6 +69,12 @@ mongoose
 app.engine('handlebars', engine())
 app.set('view engine', 'handlebars')
 app.set('views', path.resolve(__dirname, './views'))
+
+// Middleware
+
+app.use(express.json()) // Me permite ejecutar json en la app
+app.use(express.urlencoded({ extended: true })) // Me permite poder realizar consultas en (req.query)
+
 
 const myServer = app.listen(PORT, () => {
     console.log(`Server on port ${PORT}`)
