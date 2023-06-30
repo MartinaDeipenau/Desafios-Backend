@@ -23,8 +23,28 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        required: true
+        required: true,
     },
+    cart: {
+        type: Schema.Types.ObjectId,
+        ref: 'cart',
+    }
+})
+
+userSchema.pre('save', async function (next) {
+    if (!this.isNew) {
+        return next()
+    }
+
+    try {
+        const newcart = new cartModel()
+        await newcart.save()
+        this.cart = newcart._id
+
+        return next()
+    } catch (error) {
+        return next(error)
+    }
 })
 
 export const userModel = model('user', userSchema)

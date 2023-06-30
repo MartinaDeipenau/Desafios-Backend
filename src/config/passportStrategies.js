@@ -8,12 +8,12 @@ passport.use(
     new GitHubStrategy(
         {
             clientID: 'Iv1.00e76cd60a4f4244',
-            clientSecret: '821168e19acecba5aefc53d8304859041d2f90b0',
+            clientSecret: process.env.GITHUB_SECRET,
             callbackURL: "http://localhost:4000/api/register/github",
         },
         async (accessToken, refreshToken, profile, done) => {
             try {
-                console.log(profile)
+                // console.log(profile)
                 const user = await userModel.findOne({ email: profile._json.email })
                 if (!user) {
                     const newUser = new userModel({
@@ -41,7 +41,7 @@ passport.serializeUser((user, done) => {
 
 passport.deserializeUser(async (id, done) => {
     try {
-        const user = await usersModel.findById(id)
+        const user = await userModel.findById(id)
         done(null, user)
     } catch (error) {
         done(error)
