@@ -1,11 +1,15 @@
 import { userModel } from '../models/user.js'
 import { validatePassword } from '../utils/bcrypt.js'
+import { getUsers, getUsersByE } from '../services/userService.js'
 
+
+// Login controller
 
 export const login = async (req, res, next) => {
     try {
         const { email, password } = req.body
         const user = await userModel.findOne({ email })
+        console.log(user)
 
         if (!user) {
             res.send('Mail or password error')
@@ -25,6 +29,8 @@ export const login = async (req, res, next) => {
         }
     }
 }
+
+// Logout controller
 
 export const logout = async (req, res, next) => {
     try {

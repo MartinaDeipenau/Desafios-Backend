@@ -1,54 +1,16 @@
 import { Router } from 'express'
 import { productModel } from '../models/products.js'
 
+import {
+  getAllProducts,
+  getProductById,
+} from '../controllers/product.controller.js'
+
 const productsRouters = Router()
 
-productsRouters.get('/', async (req, res) => {
-  try {
-    const sort = req.query.sort === 'desc' ? -1 : (req.query.sort = 0)
-    const category = req.query.category
-    const status = req.query.status
-    const query = {}
-    category ? (query.category = category) : ''
-    status ? (query.status = status) : ''
+productsRouters.get('/', getAllProducts)
 
-    const options = {
-      limit: parseInt(req.query.limit) || 8,
-      page: parseInt(req.query.page) || 1,
-      sort: { price: sort },
-      lean: true,
-    }
-
-    const product = await productModel.paginate(query, options)
-    product.status = 'success'
-
-    res.render('home', {
-      product: product,
-      user: req.session.user,
-    })
-  } catch (error) {
-    console.log(error)
-
-    res.status(500).send('Error')
-  }
-})
-
-productsRouters.get('/:id', async (req, res) => {
-  try {
-    const id = req.params.id
-    const product = await productModel.findOne({ _id: id })
-
-    res.render('products', {
-      title: product.title,
-      price: product.price,
-      stock: product.stock,
-      thumbnail: product.thumbnail,
-    })
-  } catch (error) {
-    console.log(error)
-    res.status(500).send('Error getting product')
-  }
-})
+productsRouters.get('/:id', getProductById)
 
 productsRouters.post('/', async (req, res) => {
   const {
