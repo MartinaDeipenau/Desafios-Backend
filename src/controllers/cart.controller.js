@@ -1,26 +1,25 @@
 import { v4 as uniqueCodeId } from 'uuid'
-import { newCart, getCart, updateCart } from '../DAL/DAOs/mongoDAO/cartMongo.js'
-import { getUsersByCustomFilter } from '../DAL/DAOs/mongoDAO/userMongo.js'
-import { newOrder } from '../DAL/DAOs/mongoDAO/ordersMongo.js'
+import { newCart, getCart, updateCart } from '../persistencia/DAOs/mongoDAO/cartMongo.js'
+import { getUsersByCustomFilter } from '../persistencia/DAOs/mongoDAO/userMongo.js'
+import { newTicket } from '../persistencia/DAOs/mongoDAO/ticketsMongo.js'
 import {
     getProductsById,
     updateProduct,
-} from '../DAL/DAOs/mongoDAO/productMongo.js'
+} from '../persistencia/DAOs/mongoDAO/productMongo.js'
 
-//create a new cart
+// Create a new cart 
 
 export const createCart = async (res, req) => {
     try {
         const cart = await newCart()
         res.status(200).send(cart)
     } catch (error) {
-        res.status(500).send('Errorcreating cart')
+        res.status(500).send('Error creating cart')
     }
 }
 
-// get all products of a cart
 
-export const getProducFromCart = async (req, res) => {
+export const getProductFromCart = async (req, res) => {
     const cid = req.params.cid
 
     try {
@@ -30,9 +29,8 @@ export const getProducFromCart = async (req, res) => {
         res.status(500).send('Error getting products from cart')
     }
 }
-// delete all products of a cart
 
-export const deleteAllProducsFromCart = async (req, res) => {
+export const deleteAllProductsFromCart = async (req, res) => {
     const cid = req.params.cid
     const cart = await getCart({ _id: cid })
 
@@ -46,7 +44,7 @@ export const deleteAllProducsFromCart = async (req, res) => {
         res.status(500).send('Error deleteting products from cart')
     }
 }
-// add Products and quantity to cart (quantity is required)
+
 
 export const addProductToCart = async (req, res) => {
     const cid = req.params.cid
@@ -69,7 +67,7 @@ export const addProductToCart = async (req, res) => {
         res.status(500).send('Error adding product to cart' + error)
     }
 }
-//  update the quantity of one product from cart
+
 
 export const updateQuantity = async (req, res) => {
     const cid = req.params.cid
@@ -102,13 +100,13 @@ export const deleteProductFromCart = async (req, res) => {
     try {
         const productUpdate = cart.products
 
-        // return the index of the product in  the cart with the pid
+    
 
         const productIndex = productUpdate.findIndex(
             (prod) => prod.id_product == pid
         )
 
-        // from index remove de first element
+    
 
         productUpdate.splice(productIndex, 1)
 
@@ -120,7 +118,7 @@ export const deleteProductFromCart = async (req, res) => {
     }
 }
 
-//New Orders
+// New Orders
 
 export const generatePucharse = async (req, res) => {
     const cid = req.params.cid
@@ -130,7 +128,6 @@ export const generatePucharse = async (req, res) => {
     const productWithStockID = []
     let totalAmount = 0
 
-    //console.log(req.session)
 
     try {
         if (user) {
@@ -145,20 +142,20 @@ export const generatePucharse = async (req, res) => {
                 } else {
                     productWithStockID.push(productData._id)
                 }
-                //  Update  stock  from product
+                
                 productData.stock -= quantity
                 await updateProduct(productId, { stock: productData.stock })
 
-                //Generate total amount  for orders
+                
                 const Subtotal = productData.price * quantity
                 totalAmount += Subtotal
 
-                // update cart product
+            
                 const toUpdateCart = { $pull: { products: { id_product: productId } } }
                 await updateCart({ _id: cid }, toUpdateCart)
             }
 
-            const generateNewOrder = await newOrder({
+            const generateNewTicket = await newTicket({
                 code: uniqueCodeId(),
                 pucharse_datetime: new Date(),
                 amount: totalAmount,
