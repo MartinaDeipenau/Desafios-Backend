@@ -1,5 +1,5 @@
 import express from 'express'
-import mongoose, { mongo } from 'mongoose'
+import './config/configDB.js'
 import 'dotenv/config' // Para poder implementar dotenv
 import { Server } from 'socket.io'
 import { engine } from 'express-handlebars'
@@ -9,12 +9,12 @@ import messagesRouters from './routes/messages.routes.js'
 import sessionRouters from './routes/session.routes.js'
 import registerRouter from './routes/register.routes.js'
 import * as path from 'path'
-import { __dirname, __filename } from './path.js'
+import { __dirname, __filename } from './utils/path.js'
 import session from 'express-session'
 import MongoStore from 'connect-mongo'
 import cookieParser from 'cookie-parser'
 import passport from 'passport'
-import './config/passportStrategies.js'
+import initializePassport from './config/passportStrategies.js'
 
 
 // Configuration express
@@ -51,18 +51,15 @@ app.use(
             ttl: 210 // Segundos
         }),
         secret: process.env.SESSION_SECRET,
-        resave: true,
-        saveUninitialized: true,
-        // cookie: { secure: true }
+        resave: false,
+        saveUninitialized: false,
     }))
 
-// Configuration mongoose
-mongoose
-    .connect(process.env.URL_MONGOOSE)
-    .then(() => console.log('DB is connected'))
-    .catch((error) => {
-        console.log('Error connecting to MongoDB')
-    })
+// Configuration passport
+
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 // Configuration handlebars
 

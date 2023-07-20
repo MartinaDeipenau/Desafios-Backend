@@ -1,9 +1,10 @@
 import { Router } from 'express'
-import { messagesModel } from '../models/messages.js'
+import { messagesModel } from '../persistencia/mongoDB/models/messages.js'
+import { autorization } from '../middlewares/autorization.js'
 
 const messagesRouters = Router()
 
-messagesRouters.get('/', async (req, res) => {
+messagesRouters.get('/', autorization(['user']), async (req, res) => {
   try {
     req.io.on('connection', async (socket) => {
       console.log('Client connected')

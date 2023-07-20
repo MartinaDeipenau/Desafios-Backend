@@ -1,4 +1,4 @@
-import bcrypt, { hash } from 'bcrypt'
+import bcrypt from 'bcrypt'
 
 const salt = bcrypt.genSaltSync(parseInt(process.env.SALT))
 

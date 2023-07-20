@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { login, logout } from '../controllers/session.controller.js'
+import passport from 'passport'
 
 
 const sessionRouter = Router()
@@ -10,7 +11,14 @@ sessionRouter.get('/login', async (req, res) => {
     res.render('login')
 })
 
-sessionRouter.post('/login', login)
+sessionRouter.post('/login',
+    passport.authenticate('login', {
+        passReqToCallback: true,
+        failureRedirect: '/api/register',
+        failureMessage: '...',
+    }),
+    login
+)
 
 
 // Logout

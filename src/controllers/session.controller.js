@@ -1,31 +1,25 @@
-import { userModel } from '../models/user.js'
+import passport from 'passport'
 import { validatePassword } from '../utils/bcrypt.js'
-import { getUsers, getUsersByE } from '../services/userService.js'
-
+import { getUsers, getUsersByEmail } from '../persistencia/DAOs/mongoDAO/userMongo.js'
 
 // Login controller
 
-export const login = async (req, res, next) => {
+export const login = async (req, res) => {
     try {
-        const { email, password } = req.body
-        const user = await userModel.findOne({ email })
-        console.log(user)
-
-        if (!user) {
-            res.send('Mail or password error')
+        if (!req.user) return res.status(400).send('error loading user' + error)
+        req.session.user = {
+            first_name: req.user.first_name,
+            last_name: req.user.last_name,
+            age: req.user.age,
+            email: req.user.email,
+            role: req.user.role,
+            cart: req.user.cart,
         }
-        const isValidPassword = await validatePassword(password, user.password)
-
-        if (!isValidPassword) {
-            res.send('Mail or password error')
-        }
-        req.session.user = user
-        res.redirect('/api/products')
-        res.status(200).send({ status: 'success' })
+        res.status(200).redirect('/api/products')
     } catch {
         ; (error) => {
-            console.log(error)
-            res.status(400).send('Error login')
+            console.error(error)
+            res.status(401).send('Error attempting login')
         }
     }
 }
@@ -38,6 +32,6 @@ export const logout = async (req, res, next) => {
         res.redirect('login')
     } catch {
         ; (error) => console.error(error)
-        res.status(500).send('Error logout')
+        res.status(500).send('Error attempting logout')
     }
 }
