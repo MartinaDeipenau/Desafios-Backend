@@ -20,7 +20,7 @@ cartsRouters.get('/:cid', getProductFromCart)
 
 cartsRouters.delete('/:cid', deleteAllProductsFromCart)
 
-cartsRouters.post('/:cid/product/:pid', autorization(['user']), addProductTocart)
+cartsRouters.post('/:cid/product/:pid', addProductTocart) //, autorization(['user'])
 
 cartsRouters.put('/:cid/product/:pid', updateQuantity)
 

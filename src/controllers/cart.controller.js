@@ -1,4 +1,7 @@
 import { v4 as uniqueCodeId } from 'uuid'
+import CustomError from '../errors/customError.js'
+import EError from '../errors/enumError.js'
+import { generateProductErrorAddToCart } from '../errors/infoError.js'
 import { newCart, getCart, updateCart } from '../persistencia/DAOs/mongoDAO/cartMongo.js'
 import { getUsersByCustomFilter } from '../persistencia/DAOs/mongoDAO/userMongo.js'
 import { newTicket } from '../persistencia/DAOs/mongoDAO/ticketsMongo.js'
@@ -53,6 +56,17 @@ export const addProductToCart = async (req, res) => {
     const cart = await getCart({ _id: cid })
 
     try {
+        if (product._id === undefined || quantity <= 0) {
+            CustomError.createError({
+                name: 'Error de creacion del producto',
+                cause: generateProductErrorAddToCart({
+                    product,
+                }),
+                message: 'Error al agregar producto al carrito',
+                code: EError.INVALID_ARGUMENT
+            })
+        }
+
         const Addproducts = {
             id_product: pid,
             quantity: quantity,
@@ -100,13 +114,13 @@ export const deleteProductFromCart = async (req, res) => {
     try {
         const productUpdate = cart.products
 
-    
+
 
         const productIndex = productUpdate.findIndex(
             (prod) => prod.id_product == pid
         )
 
-    
+
 
         productUpdate.splice(productIndex, 1)
 
@@ -142,15 +156,15 @@ export const generatePucharse = async (req, res) => {
                 } else {
                     productWithStockID.push(productData._id)
                 }
-                
+
                 productData.stock -= quantity
                 await updateProduct(productId, { stock: productData.stock })
 
-                
+
                 const Subtotal = productData.price * quantity
                 totalAmount += Subtotal
 
-            
+
                 const toUpdateCart = { $pull: { products: { id_product: productId } } }
                 await updateCart({ _id: cid }, toUpdateCart)
             }

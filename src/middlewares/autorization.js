@@ -1,12 +1,25 @@
-export const autorization = (role) => {
+import CustomError from '../errors/customError.js'
+import EErrors from '../errors/enumError.js'
+
+const autorization = (role) => {
     return (req, res, next) => {
         if (!req.isAuthenticated()) {
-            return res.status(401).json({ Error :'Debes iniciar sesion para realizar esta accion'})
+            CustomError.createError({
+                name: 'Unauthenticated',
+                cause: 'User not logged',
+                message: 'Debes iniciar sesion para realizar esta accion',
+                code: EErrors.AUTORIZATION_ERROR
+            })
         } else {
             if (role.includes(req.user.role)) {
-                return next ()
+                return next()
             } else {
-                return res.status(401).json ({ Error : 'No tienes permiso para realizar esta accion'})
+                CustomError.createError({
+                    name: 'Unauthorized',
+                    cause: 'User role not allowed',
+                    message: 'No tienes permisos para realizar esta accion',
+                    code: EErrors.AUTORIZATION_ERROR
+                })
             }
         }
     }

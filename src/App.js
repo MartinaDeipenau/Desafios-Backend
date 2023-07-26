@@ -3,11 +3,15 @@ import './config/configDB.js'
 import 'dotenv/config' // Para poder implementar dotenv
 import { Server } from 'socket.io'
 import { engine } from 'express-handlebars'
+
 import productsRouters from './routes/product.routes.js'
 import cartsRouters from './routes/carts.routes.js'
 import messagesRouters from './routes/messages.routes.js'
 import sessionRouters from './routes/session.routes.js'
 import registerRouter from './routes/register.routes.js'
+
+import mockingProductsRouter from './testing/routes/mockingProducts.routes.js'
+
 import * as path from 'path'
 import { __dirname, __filename } from './utils/path.js'
 import session from 'express-session'
@@ -15,6 +19,8 @@ import MongoStore from 'connect-mongo'
 import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import initializePassport from './config/passportStrategies.js'
+import errorHandler from '../src/middlewares/errors.js'
+import { errorMonitor } from 'events'
 
 
 // Configuration express
@@ -47,7 +53,7 @@ app.use(
     session({
         store: MongoStore.create({
             mongoUrl: process.env.URL_MONGOOSE,
-            mongoOptions: {useNewUrlParser: true, useUnifiedTopology: true},
+            mongoOptions: { useNewUrlParser: true, useUnifiedTopology: true },
             ttl: 210 // Segundos
         }),
         secret: process.env.SESSION_SECRET,
@@ -93,3 +99,7 @@ app.use('/api/carts', cartsRouters)
 app.use('/api/messages', messagesRouters)
 app.use('/api/session', sessionRouters)
 app.use('/api/register', registerRouter)
+app.use('/api/mockingproducts', mockingProductsRouter)
+
+// Custom error handler
+app.use(errorHandler)
