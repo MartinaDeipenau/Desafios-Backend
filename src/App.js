@@ -9,7 +9,7 @@ import cartsRouters from './routes/carts.routes.js'
 import messagesRouters from './routes/messages.routes.js'
 import sessionRouters from './routes/session.routes.js'
 import registerRouter from './routes/register.routes.js'
-
+import loggerRoutes from './routes/loggerTest.routes.js'
 import mockingProductsRouter from './testing/routes/mockingProducts.routes.js'
 
 import * as path from 'path'
@@ -20,7 +20,11 @@ import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import initializePassport from './config/passportStrategies.js'
 import errorHandler from '../src/middlewares/errors.js'
-import { errorMonitor } from 'events'
+
+import { loggerDev } from './utils/loggerWinston.js'
+
+import { loggerMiddleware } from './middleware/logger.js'
+
 
 
 // Configuration express
@@ -31,21 +35,6 @@ const PORT = 4000
 // Configuration cookies
 
 app.use(cookieParser(process.env.SIGNED_COOKIES))
-
-// Configuration passport
-
-passport.serializeUser((user, done) => {
-    done(null, user._id)
-})
-
-passport.deserializeUser(async (id, done) => {
-    try {
-        const user = await usersModel.findById(id)
-        done(null, user)
-    } catch (error) {
-        done(error)
-    }
-})
 
 // Configuration session
 
@@ -77,10 +66,10 @@ app.set('views', path.resolve(__dirname, './views'))
 
 app.use(express.json()) // Me permite ejecutar json en la app
 app.use(express.urlencoded({ extended: true })) // Me permite poder realizar consultas en (req.query)
-
+app.use(loggerMiddleware)
 
 const myServer = app.listen(PORT, () => {
-    console.log(`Server on port ${PORT}`)
+    loggerDev.info(`Server on port ${PORT}`)
 })
 
 // Server Io
@@ -100,6 +89,9 @@ app.use('/api/messages', messagesRouters)
 app.use('/api/session', sessionRouters)
 app.use('/api/register', registerRouter)
 app.use('/api/mockingproducts', mockingProductsRouter)
+app.use('/api/loggerTest', loggerRoutes)
+
 
 // Custom error handler
 app.use(errorHandler)
+
