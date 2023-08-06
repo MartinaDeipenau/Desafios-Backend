@@ -1,6 +1,6 @@
 import { Schema, model } from 'mongoose'
 
-const ticketSchema = new Schema({
+const orderSchema = new Schema({
     code: {
         type: String,
         unique: true,
@@ -32,4 +32,4 @@ const ticketSchema = new Schema({
     }
 })
 
-export const ticketSchema = model('tickets', ticketSchema)
+export const orderModel = model('orders', orderSchema)

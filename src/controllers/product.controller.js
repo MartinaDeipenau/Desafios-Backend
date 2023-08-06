@@ -1,6 +1,6 @@
 import CustomError from '../errors/customError.js'
 import EErrors from '../errors/enumError.js'
-import { generateProductErrorAdd } from '../errors/infoError.js'
+import { generateErrorAddProduct } from '../errors/infoError.js'
 
 import {
     getProducts,
@@ -14,7 +14,7 @@ import {
 export const getAllProducts = async (req, res) => {
     try {
         const product = await getProducts(req.query)
-        red.render('home', {
+        res.render('home', {
             products: product.docs,
             user: req.session.user,
         })
@@ -56,7 +56,7 @@ export const postNewProduct = async (req, res) => {
         if (!title || !description || !price || !category || !code || !stock ) {
             CustomError.createError({
                 name: 'Product creation error',
-                cause: generateProductErrorAdd({
+                cause: generateErrorAddProduct({
                     title,
                     description,
                     price,

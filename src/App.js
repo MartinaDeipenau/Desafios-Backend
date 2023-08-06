@@ -19,7 +19,7 @@ import MongoStore from 'connect-mongo'
 import cookieParser from 'cookie-parser'
 import passport from 'passport'
 import initializePassport from './config/passportStrategies.js'
-import errorHandler from '../src/middlewares/errors.js'
+import errorHandler from '../src/middleware/errors.js'
 
 import { loggerDev } from './utils/loggerWinston.js'
 

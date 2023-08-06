@@ -1,7 +1,5 @@
 import { Router } from 'express'
 import { generateProduct } from '../utils/faker.js'
-import { fakerES } from '@faker-js/faker'
-import { faker } from '@faker-js/faker/locale/af_ZA.js'
 
 const mockingProductsRouter = Router()
 

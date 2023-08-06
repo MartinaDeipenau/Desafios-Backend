@@ -4,7 +4,7 @@ let user
 let chatButton = document.getElementById('chatButton')
 let chatBox = document.getElementById('chatBox')
 let messagesP = document.getElementById('messagesP')
-let chatS = document.getElementById('startChat')
+let chatStart = document.getElementById('startChat')
 
 function renderMessages() {
   socket.on('messages', (dataMessage) => {
@@ -14,7 +14,7 @@ function renderMessages() {
     })
   })
 }
-if (chatS) {
+if (chatStart) {
   chatS.addEventListener('click', () => {
     Swal.fire({
       title: 'Identification',

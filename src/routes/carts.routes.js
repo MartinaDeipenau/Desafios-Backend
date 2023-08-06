@@ -1,10 +1,10 @@
 import { Router } from 'express'
-import { autorization } from '../middlewares/autorization.js'
+import { auth } from '../middleware/auth.js'
 import {
   createCart,
-  getProductFromCart,
-  deleteAllProductsFromCart,
-  addProductTocart,
+  getProducFromCart,
+  deleteAllProducsFromCart,
+  addProductToCart,
   updateQuantity,
   deleteProductFromCart,
   generatePucharse,
@@ -16,11 +16,13 @@ const cartsRouters = Router()
 
 cartsRouters.post('/', createCart)
 
-cartsRouters.get('/:cid', getProductFromCart)
+cartsRouters.get('/:cid', getProducFromCart)
 
-cartsRouters.delete('/:cid', deleteAllProductsFromCart)
+cartsRouters.delete('/:cid', deleteAllProducsFromCart)
 
-cartsRouters.post('/:cid/product/:pid', addProductTocart) //, autorization(['user'])
+cartsRouters.post('/:cid/product/:pid', addProductToCart)
+
+//, auth(['user'])
 
 cartsRouters.put('/:cid/product/:pid', updateQuantity)
 

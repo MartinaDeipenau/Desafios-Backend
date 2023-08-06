@@ -1,4 +1,4 @@
-export const generateProductErrorAdd = (product) => {
+export const generateErrorAddProduct = (product) => {
     return `Uno o mas parametros incompletos.
     Lista de parametros requeridos:
     * title: debe ser string, se recibió ${product.title}
@@ -9,7 +9,7 @@ export const generateProductErrorAdd = (product) => {
     * category: debe ser string, se recibió ${product.category}`
 }
 
-export const generateProductErrorAddToCart = (product) => {
+export const generateErrorAddProductToCart = (product) => {
     return `Uno o mas parametros incompletos.
     Lista de parametros requeridos: 
     * product: necesita identificacion de mongoDB, se recibió ${product._id}, producto no encontrado`

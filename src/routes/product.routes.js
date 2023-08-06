@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { autorization } from '../middlewares/autorization.js'
+import { auth } from '../middleware/auth.js'
 import {
   getAllProducts,
   getProductById,
@@ -14,10 +14,10 @@ productsRouters.get('/', getAllProducts)
 
 productsRouters.get('/:id', getProductById)
 
-productsRouters.post('/', autorization(['admin']), postNewProduct)
+productsRouters.post('/', auth(['admin']), postNewProduct)
 
-productsRouters.put('/:id', autorization(['admin']), putProduct)
+productsRouters.put('/:id', auth(['admin']), putProduct)
 
-productsRouters.delete('/:id', autorization(['admin']), deleteProduct)
+productsRouters.delete('/:id', auth(['admin']), deleteProduct)
 
 export default productsRouters

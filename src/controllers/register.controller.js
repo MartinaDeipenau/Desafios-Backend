@@ -1,7 +1,7 @@
 import { createUser } from '../persistencia/DAOs/mongoDAO/registerMongo.js'
 import { userModel } from '../persistencia/mongoDB/models/user.js'
 import { transporter } from '../utils/nodemailer.js'
-transporter
+
 
 export const newUser = async (req, res) => {
     const { email } = req.body

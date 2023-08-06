@@ -1,10 +1,10 @@
 import { v4 as uniqueCodeId } from 'uuid'
 import CustomError from '../errors/customError.js'
 import EError from '../errors/enumError.js'
-import { generateProductErrorAddToCart } from '../errors/infoError.js'
+import { generateErrorAddProductToCart } from '../errors/infoError.js'
 import { newCart, getCart, updateCart } from '../persistencia/DAOs/mongoDAO/cartMongo.js'
 import { getUsersByCustomFilter } from '../persistencia/DAOs/mongoDAO/userMongo.js'
-import { newTicket } from '../persistencia/DAOs/mongoDAO/ticketsMongo.js'
+import { newOrder } from '../persistencia/DAOs/mongoDAO/ordersMongo.js'
 import {
     getProductsById,
     updateProduct,
@@ -22,7 +22,7 @@ export const createCart = async (res, req) => {
 }
 
 
-export const getProductFromCart = async (req, res) => {
+export const getProducFromCart = async (req, res) => {
     const cid = req.params.cid
 
     try {
@@ -33,7 +33,7 @@ export const getProductFromCart = async (req, res) => {
     }
 }
 
-export const deleteAllProductsFromCart = async (req, res) => {
+export const deleteAllProducsFromCart = async (req, res) => {
     const cid = req.params.cid
     const cart = await getCart({ _id: cid })
 
@@ -59,7 +59,7 @@ export const addProductToCart = async (req, res) => {
         if (product._id === undefined || quantity <= 0) {
             CustomError.createError({
                 name: 'Error de creacion del producto',
-                cause: generateProductErrorAddToCart({
+                cause: generateErrorAddProductToCart({
                     product,
                 }),
                 message: 'Error al agregar producto al carrito',
@@ -78,7 +78,7 @@ export const addProductToCart = async (req, res) => {
 
         res.status(200).send('Product added to cart')
     } catch (error) {
-        res.status(500).send('Error adding product to cart' + error)
+        next(error)
     }
 }
 
@@ -169,7 +169,7 @@ export const generatePucharse = async (req, res) => {
                 await updateCart({ _id: cid }, toUpdateCart)
             }
 
-            const generateNewTicket = await newTicket({
+            const generateNewOrder = await newOrder({
                 code: uniqueCodeId(),
                 pucharse_datetime: new Date(),
                 amount: totalAmount,

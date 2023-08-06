@@ -16,7 +16,7 @@ const customLevels = {
         info: 'blue',
         http: 'green',
         debug: 'cyan'
-    }
+    },
 }
 
 winston.addColors(customLevels.colors)
@@ -36,6 +36,7 @@ export const loggerProduction = winston.createLogger({
     levels: customLevels.levels,
     format: winston.format.combine(
         winston.format.colorize({ all: true }), 
+        winston.format.simple()
     ),
     transports: [
         new winston.transports.Console(),
