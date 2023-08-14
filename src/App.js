@@ -11,6 +11,8 @@ import sessionRouters from './routes/session.routes.js'
 import registerRouter from './routes/register.routes.js'
 import loggerRoutes from './routes/loggerTest.routes.js'
 import mockingProductsRouter from './testing/routes/mockingProducts.routes.js'
+import resetPasswordsRouter from './routes/resetPassword.routes.js'
+import userRouter from './routes/user.routes.js'
 
 import * as path from 'path'
 import { __dirname, __filename } from '../path.js'
@@ -66,7 +68,7 @@ app.set('views', path.join(__dirname, 'src', 'views'))
 
 app.use(express.json()) // Me permite ejecutar json en la app
 app.use(express.urlencoded({ extended: true })) // Me permite poder realizar consultas en (req.query)
-app.use(express.static(path.join(__dirname, 'public')))
+// app.use(express.static(path.join(__dirname, 'public')))
 app.use(loggerMiddleware)
 
 app.get('/', (req, res)=> {
@@ -95,8 +97,10 @@ app.use('/api/session', sessionRouters)
 app.use('/api/register', registerRouter)
 app.use('/api/mockingproducts', mockingProductsRouter)
 app.use('/api/loggerTest', loggerRoutes)
+app.use('/api/resetPass', resetPasswordsRouter)
+app.use('/api/user', userRouter)
 
 
 // Custom error handler
-app.use(errorHandler)
+//app.use(errorHandler)
 
