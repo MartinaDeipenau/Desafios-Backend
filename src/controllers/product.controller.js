@@ -24,9 +24,9 @@ export const getAllProducts = async (req, res) => {
 }
 
 export const getProductById = async (req, res) => {
-    const { id } = req.params.id
+    const { id } = req.params
     try {
-        const product = await getProductsById({ _id: id })
+        const product = await getProductsById(id)
 
         res.render('products', {
             title: product.title,
@@ -40,7 +40,7 @@ export const getProductById = async (req, res) => {
 }
 
 
-export const postNewProduct = async (req, res) => {
+export const postNewProduct = async (req, res, next) => {
     const {
         title,
         description,
@@ -53,7 +53,7 @@ export const postNewProduct = async (req, res) => {
     } = req.body
 
     try {
-        if (!title || !description || !price || !category || !code || !stock ) {
+        if (!title || !description || !price || !category || !code || !stock) {
             CustomError.createError({
                 name: 'Product creation error',
                 cause: generateErrorAddProduct({
@@ -104,7 +104,13 @@ export const putProduct = async (req, res) => {
 
 export const deleteProduct = async (req, res) => {
     const { id } = req.params
+    const product = await getProductsById(id)
     try {
+        if (req.user.email !== product.owner || product.owner !== 'admin') {
+            throw new Error('Unauthorized')
+        }
+
+
         await productDelete(id)
 
         res.status(200).send('Product deleted successfully')

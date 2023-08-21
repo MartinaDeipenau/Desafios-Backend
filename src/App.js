@@ -13,6 +13,8 @@ import loggerRoutes from './routes/loggerTest.routes.js'
 import mockingProductsRouter from './testing/routes/mockingProducts.routes.js'
 import resetPasswordsRouter from './routes/resetPassword.routes.js'
 import userRouter from './routes/user.routes.js'
+import swaggerJSDoc from 'swagger-jsdoc'
+import swaggerUiExpress from 'swagger-ui-express'
 
 import * as path from 'path'
 import { __dirname, __filename } from '../path.js'
@@ -33,6 +35,26 @@ import { loggerMiddleware } from './middleware/logger.js'
 
 const app = express()
 const PORT = 4000
+
+// Configuration swagger
+
+const swaggerOptions = {
+    definition: {
+        openapi: '3.1.0',
+        info: {
+            title: 'Ecommerce APIs documentation',
+            description: 'Info product adn cart modules',
+            version: '1.0.0',
+            contact: {
+                name: 'Deipenau Martina Lourdes',
+                url: 'https://www.linkedin.com/in/martina-lourdes-deipenau',
+                email: 'martinadeipenau02@gmail.com'
+            },
+        },
+    },
+    apis: [`${__dirname}/docs/**/*.yaml`]
+}
+const spec = swaggerJSDoc(swaggerOptions)
 
 // Configuration cookies
 
@@ -71,8 +93,8 @@ app.use(express.urlencoded({ extended: true })) // Me permite poder realizar con
 // app.use(express.static(path.join(__dirname, 'public')))
 app.use(loggerMiddleware)
 
-app.get('/', (req, res)=> {
-    res.render('home', {title: 'Pagina de inicio'})
+app.get('/', (req, res) => {
+    res.render('home', { title: 'Pagina de inicio' })
 })
 
 const myServer = app.listen(PORT, () => {
@@ -99,8 +121,9 @@ app.use('/api/mockingproducts', mockingProductsRouter)
 app.use('/api/loggerTest', loggerRoutes)
 app.use('/api/resetPass', resetPasswordsRouter)
 app.use('/api/user', userRouter)
+app.use('/apidocs', swaggerUiExpress.serve, swaggerUiExpress.setup(spec))
 
 
 // Custom error handler
-//app.use(errorHandler)
+app.use(errorHandler)
 
